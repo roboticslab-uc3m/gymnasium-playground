@@ -105,11 +105,16 @@ class GridWorldEnv(gym.Env):
 
        observation = self._get_obs()
        info = self._get_info()
+
        return observation, reward, terminated, False, info
 
 
     def render(self):
-        pass
+        #print('CsvEnv.render', mode)
+        row, col = self.s // self.ncol, self.s % self.ncol # Opposite of ravel().
+        viewer = np.copy(self.inFile) # Force a deep copy for rendering.
+        viewer[row, col] = 2
+        print(viewer)
 
     def close(self):
-        pass
+        print('CsvEnv.close')
