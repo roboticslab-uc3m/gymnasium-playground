@@ -13,8 +13,14 @@ CORNER_UP_LEFT=5
 CORNER_DOWN_RIGHT=6
 CORNER_DOWN_LEFT=7
 
+SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
+COLOR_BACKGROUND = (0, 0, 0)
+COLOR_WALL = (255, 255, 255)
+COLOR_ROBOT = (255, 0, 0)
+
 class GridWorldEnv(gym.Env):
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
+    # classic "render_modes" use: "human" (pygame window), "rgb_array" (pygame raw data)
+    metadata = {"render_modes": ["text", "pygame"], "render_fps": 4}
 
     def __init__(self, render_mode=None):
         # Remember: X points down, Y points right, thus Z points outwards.
@@ -81,6 +87,18 @@ class GridWorldEnv(gym.Env):
                         newstate = _to_s(newrow, newcol)
                         li.append((1.0, newstate, 0.0, False)) # (probability, nextstate, reward, done)
 
+        assert render_mode is None or render_mode in self.metadata["render_modes"]
+        self.render_mode = render_mode
+
+        """
+        If human-rendering is used, `self.window` will be a reference
+        to the window that we draw to. `self.clock` will be a clock that is used
+        to ensure that the environment is rendered at the correct framerate in
+        human-mode. They will remain `None` until human-mode is used for the
+        first time.
+        """
+        self.window = None
+        self.clock = None
 
     def _get_obs(self):
         return self.s
@@ -97,6 +115,8 @@ class GridWorldEnv(gym.Env):
         observation = self._get_obs()
         info = self._get_info()
 
+        self.render()
+
         return observation, info
 
     def step(self, action):
@@ -108,9 +128,61 @@ class GridWorldEnv(gym.Env):
 
        return observation, reward, terminated, False, info
 
-
     def render(self):
-        #print('CsvEnv.render', mode)
+        #print('CsvEnv.render', self.render_mode)
+        if self.render_mode == "text":
+            return self._render_text()
+        if self.render_mode == "pygame": # "human" in tutorial
+            return self._render_pygame()
+        else: # None
+            pass
+
+    def _render_pygame(self):
+
+        if self.window is None and self.render_mode == "human":
+            pygame.init()
+            pygame.display.init()
+            self.window = pygame.display.set_mode((self.window_size, self.window_size))
+        if self.clock is None and self.render_mode == "human":
+            self.clock = pygame.time.Clock()
+
+        row, col = self.s // self.ncol, self.s % self.ncol # Opposite of ravel().
+
+        canvas = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        canvas.fill(COLOR_BACKGROUND)
+        for iX in range(self.nrow):
+            #print "iX:",iX
+            for iY in range(self.ncol):
+                #print "* iY:",iY
+
+                pixelX = SCREEN_WIDTH/self.nrow
+                pixelY = SCREEN_HEIGHT/self.ncol
+
+                #-- Skip box if map indicates a 0
+                if self.inFile[iX][iY] == 0:
+                    continue
+                if self.inFile[iX][iY] == 1:
+                    pygame.draw.rect(canvas,
+                                     COLOR_WALL,
+                                     pygame.Rect( pixelX*iX, pixelY*iY, pixelX, pixelY ))
+                if self.inFile[iX][iY] == 3:
+                    pygame.draw.rect(canvas, (0,255,0),
+                                     pygame.Rect( pixelX*iX, pixelY*iY, pixelX, pixelY ))
+                robot = pygame.draw.rect(canvas, COLOR_ROBOT,
+                                         pygame.Rect( pixelX*row+pixelX/4.0, pixelY*col+pixelY/4.0, pixelX/2.0, pixelY/2.0 ))
+
+        # The following line copies our drawings from `canvas` to the
+        # visible window.
+        self.window.blit(canvas, canvas.get_rect())
+        pygame.event.pump()
+        pygame.display.update()
+
+        # We need to ensure that human-rendering occurs at the predefined framerate.
+        # The following line will automatically add a delay to keep the
+        # framerate stable.
+        self.clock.tick(self.metadata["render_fps"])
+
+    def _render_text(self):
         row, col = self.s // self.ncol, self.s % self.ncol # Opposite of ravel().
         viewer = np.copy(self.inFile) # Force a deep copy for rendering.
         viewer[row, col] = 2
@@ -118,3 +190,6 @@ class GridWorldEnv(gym.Env):
 
     def close(self):
         print('CsvEnv.close')
+        if self.window is not None:
+            pygame.display.quit()
+            pygame.quit()
