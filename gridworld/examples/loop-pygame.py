@@ -18,7 +18,7 @@ CORNER_DOWN_LEFT=7
 
 SIM_PERIOD_MS = 500.0
 
-env = gym.make('gymnasium_playground/GridWorld-v0', render_mode='text')
+env = gym.make('gymnasium_playground/GridWorld-v0', render_mode='pygame')
 state = env.reset()
 print("state: "+str(state))
 env.render()
