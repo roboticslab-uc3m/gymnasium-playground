@@ -139,11 +139,11 @@ class GridWorldEnv(gym.Env):
 
     def _render_pygame(self):
 
-        if self.window is None and self.render_mode == "human":
+        if self.window is None and self.render_mode == "pygame":
             pygame.init()
             pygame.display.init()
-            self.window = pygame.display.set_mode((self.window_size, self.window_size))
-        if self.clock is None and self.render_mode == "human":
+            pygame = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        if self.clock is None and self.render_mode == "pygame":
             self.clock = pygame.time.Clock()
 
         row, col = self.s // self.ncol, self.s % self.ncol # Opposite of ravel().
