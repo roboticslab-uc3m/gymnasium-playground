@@ -14,7 +14,7 @@ CORNER_DOWN_RIGHT=6
 CORNER_DOWN_LEFT=7
 
 class GridWorldEnv(gym.Env):
-    metadata = {"render_modes": ["human", "rgb_array"]}
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
     def __init__(self, render_mode=None):
         # Remember: X points down, Y points right, thus Z points outwards.
