@@ -100,7 +100,13 @@ class GridWorldEnv(gym.Env):
         return observation, info
 
     def step(self, action):
-        pass
+       _, s, reward, terminated = self.P[self.s][action][0]
+       self.s = s
+
+       observation = self._get_obs()
+       info = self._get_info()
+       return observation, reward, terminated, False, info
+
 
     def render(self):
         pass
