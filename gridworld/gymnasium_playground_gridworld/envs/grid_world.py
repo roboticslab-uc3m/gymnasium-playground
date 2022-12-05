@@ -26,8 +26,9 @@ class GridWorldEnv(gym.Env):
     def _get_obs(self):
         pass
 
-    def reset(self):
-        pass
+    def reset(self, seed=None, options=None):
+        # We need the following line to seed self.np_random.
+        super().reset(seed=seed)
 
     def step(self, action):
         pass
