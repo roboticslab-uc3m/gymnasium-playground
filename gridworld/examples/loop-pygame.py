@@ -3,7 +3,7 @@
 import gymnasium as gym
 import gymnasium_playground_gridworld
 
-import numpy as np 
+import numpy as np
 import time
 
 """
@@ -36,5 +36,6 @@ time.sleep(0.5)
 for i in range(5):
     observation, reward, terminated, truncated, info = env.step(DOWN_RIGHT)
     env.render()
-    print("observation: "+str(observation)+", reward: "+str(reward)+", terminated: "+str(terminated))
+    print("observation: "+str(observation)+", reward: " +
+          str(reward)+", terminated: "+str(terminated))
     time.sleep(SIM_PERIOD_MS/1000.0)
