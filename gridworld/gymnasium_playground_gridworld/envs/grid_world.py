@@ -115,6 +115,11 @@ class GridWorldEnv(gym.Env):
         else: # None
             pass
 
+    def _render_text(self):
+        viewer = np.copy(self.inFile) # Force a deep copy for rendering.
+        viewer[self.state[0], self.state[1]] = 2
+        print(viewer)
+
     def _render_pygame(self):
 
         if self.window is None and self.render_mode == "pygame":
@@ -157,11 +162,6 @@ class GridWorldEnv(gym.Env):
         # The following line will automatically add a delay to keep the
         # framerate stable.
         self.clock.tick(self.metadata["render_fps"])
-
-    def _render_text(self):
-        viewer = np.copy(self.inFile) # Force a deep copy for rendering.
-        viewer[self.state[0], self.state[1]] = 2
-        print(viewer)
 
     def close(self):
         print('GridWorldEnv.close')
