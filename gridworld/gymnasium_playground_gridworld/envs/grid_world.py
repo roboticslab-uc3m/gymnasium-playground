@@ -50,7 +50,7 @@ class GridWorldEnv(gym.Env):
             print('GridWorldEnv.__init__: full exception message:', e)
             print('GridWorldEnv.__init__: init out of bounds, please review code!')
             quit()
-        self.initial_state = np.array([initX, initY])
+        self._initial_agent_location = np.array([initX, initY])
 
         try:
             self.inFile[goalX][goalY] = 3 # The goal (3) is fixed, so we paint it, but the robot (2) moves, so done at render().
@@ -91,7 +91,7 @@ class GridWorldEnv(gym.Env):
         # We need the following line to seed self.np_random.
         super().reset(seed=seed)
 
-        self._agent_location = self.initial_state
+        self._agent_location = self._initial_agent_location
 
         observation = self._get_obs()
         info = self._get_info()
