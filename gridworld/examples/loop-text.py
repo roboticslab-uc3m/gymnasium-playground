@@ -27,7 +27,8 @@ UP_LEFT = 7
 
 SIM_PERIOD_MS = 500.0
 
-env = gym.make('gymnasium_playground/GridWorld-v0', render_mode='text')
+env = gym.make('gymnasium_playground/GridWorld-v0', render_mode='text',
+               inFileStr='map1.csv', initX=2, initY=2, goalX=7, goalY=2)
 state = env.reset()
 print("state: "+str(state))
 env.render()

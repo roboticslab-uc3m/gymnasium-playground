@@ -33,15 +33,9 @@ class GridWorldEnv(gym.Env):
             quit()
         return value[1]*self.inFile.shape[0] + value[0]
 
-    def __init__(self, render_mode=None):
-        # Remember: See "Coordinate Systems for `.csv` and `print(numpy)`", above.
-        # hard-coded vars (begin)
-        inFileStr = 'map1.csv'
-        initX = 2
-        initY = 2
-        goalX = 7
-        goalY = 2
-        # hard-coded vars (end)
+    def __init__(self, render_mode=None, inFileStr='map1.csv', initX=2, initY=2, goalX=7, goalY=2):
+
+        # Remember "Coordinate Systems for `.csv` and `print(numpy)`", above.
 
         self.inFile = np.genfromtxt(inFileStr, delimiter=',')
 
