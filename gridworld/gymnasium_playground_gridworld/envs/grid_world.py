@@ -126,11 +126,11 @@ class GridWorldEnv(gym.Env):
 
     def _render_pygame(self):
 
-        if self.window is None and self.render_mode == "pygame":
+        if self.window is None:
             pygame.init()
             pygame.display.init()
             self.window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        if self.clock is None and self.render_mode == "pygame":
+        if self.clock is None:
             self.clock = pygame.time.Clock()
 
         canvas = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
