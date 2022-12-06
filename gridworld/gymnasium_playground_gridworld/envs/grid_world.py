@@ -88,18 +88,22 @@ class GridWorldEnv(gym.Env):
         candidate_state = self.state + self._action_to_direction[action]
         candidate_state_tag = self.inFile[candidate_state[0]][candidate_state[1]]
 
-        if candidate_state_tag == 3: # goal
+        if candidate_state_tag == 0: # free space
             self.state = candidate_state
-            reward = 1.0
-            terminated = True
+            reward = 0
+            terminated = False
         elif candidate_state_tag == 1: # wall
             # state preserved
             reward = -0.5
             terminated = True
-        else: # e.g. candidate_state_tag == 0
+        elif candidate_state_tag == 3: # goal
             self.state = candidate_state
-            reward = 0
-            terminated = False
+            reward = 1.0
+            terminated = True
+        else:
+            print('GridWorldEnv.step: something wicked, please review!')
+            terminated = True
+            quit()
 
         observation = self._get_obs()
         info = self._get_info()
