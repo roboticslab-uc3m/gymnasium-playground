@@ -64,7 +64,7 @@ class GridWorldEnv(gym.Env):
         self.clock = None
 
     def _get_obs(self):
-        return self._2d_to_1d(self.state)
+        return self._2d_to_1d(self._agent_location)
 
     def _get_info(self):
         return {}
@@ -73,7 +73,7 @@ class GridWorldEnv(gym.Env):
         # We need the following line to seed self.np_random.
         super().reset(seed=seed)
 
-        self.state = self.initial_state
+        self._agent_location = self.initial_state
 
         observation = self._get_obs()
         info = self._get_info()
@@ -85,7 +85,7 @@ class GridWorldEnv(gym.Env):
     def step(self, action):
         #print('GridWorldEnv.step', action)
 
-        candidate_state = self.state + self._action_to_direction[action]
+        candidate_state = self._agent_location + self._action_to_direction[action]
         try:
             candidate_state_tag = self.inFile[candidate_state[0]][candidate_state[1]]
         except IndexError as e:
@@ -96,7 +96,7 @@ class GridWorldEnv(gym.Env):
             quit()
 
         if candidate_state_tag == 0: # free space
-            self.state = candidate_state
+            self._agent_location = candidate_state
             reward = 0
             terminated = False
         elif candidate_state_tag == 1: # wall
@@ -104,7 +104,7 @@ class GridWorldEnv(gym.Env):
             reward = -0.5
             terminated = True
         elif candidate_state_tag == 3: # goal
-            self.state = candidate_state
+            self._agent_location = candidate_state
             reward = 1.0
             terminated = True
         else:
@@ -128,7 +128,7 @@ class GridWorldEnv(gym.Env):
 
     def _render_text(self):
         viewer = np.copy(self.inFile) # Force a deep copy for rendering.
-        viewer[self.state[0], self.state[1]] = 2
+        viewer[self._agent_location[0], self._agent_location[1]] = 2
         print(viewer)
 
     def _render_pygame(self):
@@ -175,7 +175,7 @@ class GridWorldEnv(gym.Env):
                     pygame.draw.rect(canvas, (0,255,0),
                                      pygame.Rect( self.cellWidth*iY, self.cellHeight*iX, self.cellWidth, self.cellHeight ))
                 robot = pygame.draw.rect(canvas, COLOR_ROBOT,
-                                         pygame.Rect( self.cellWidth*self.state[1]+self.cellWidth/4.0, self.cellHeight*self.state[0]+self.cellHeight/4.0, self.cellWidth/2.0, self.cellHeight/2.0 ))
+                                         pygame.Rect( self.cellWidth*self._agent_location[1]+self.cellWidth/4.0, self.cellHeight*self._agent_location[0]+self.cellHeight/4.0, self.cellWidth/2.0, self.cellHeight/2.0 ))
 
         # The following line copies our drawings from `canvas` to the
         # visible window.
