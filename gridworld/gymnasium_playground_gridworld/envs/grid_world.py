@@ -86,7 +86,14 @@ class GridWorldEnv(gym.Env):
         #print('GridWorldEnv.step', action)
 
         candidate_state = self.state + self._action_to_direction[action]
-        candidate_state_tag = self.inFile[candidate_state[0]][candidate_state[1]]
+        try:
+            candidate_state_tag = self.inFile[candidate_state[0]][candidate_state[1]]
+        except IndexError as e:
+            # state preserved
+            print('GridWorldEnv.step: full exception message:', e)
+            print('GridWorldEnv.step: probably went out of bounds, add some walls on your map!')
+            terminated = True
+            quit()
 
         if candidate_state_tag == 0: # free space
             self.state = candidate_state
