@@ -24,6 +24,12 @@ class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["text", "pygame"], "render_fps": 4}
 
     def _2d_to_1d(self, value): # Flatten/ravel
+        try:
+            self.inFile[value[0]][value[1]]
+        except IndexError as e:
+            print('GridWorldEnv._2d_to_1d: full exception message:', e)
+            print('GridWorldEnv._2d_to_1d: value out of bounds, please review code!')
+            quit()
         return value[1]*self.inFile.shape[0] + value[0]
 
     def __init__(self, render_mode=None):
@@ -37,7 +43,21 @@ class GridWorldEnv(gym.Env):
         # hard-coded vars (end)
 
         self.inFile = np.genfromtxt(inFileStr, delimiter=',')
-        self.inFile[goalX][goalY] = 3 # The goal (3) is fixed, so we paint it, but the robot (2) moves, so done at render().
+
+        try:
+            self.inFile[initX][initY]
+        except IndexError as e:
+            print('GridWorldEnv.__init__: full exception message:', e)
+            print('GridWorldEnv.__init__: init out of bounds, please review code!')
+            quit()
+        self.initial_state = np.array([initX, initY])
+
+        try:
+            self.inFile[goalX][goalY] = 3 # The goal (3) is fixed, so we paint it, but the robot (2) moves, so done at render().
+        except IndexError as e:
+            print('GridWorldEnv.__init__: full exception message:', e)
+            print('GridWorldEnv.__init__: goal out of bounds, please review code!')
+            quit()
 
         self.nS = self.inFile.shape[0] * self.inFile.shape[1] # nS: number of states
         self.observation_space = spaces.Discrete(self.nS)
@@ -54,8 +74,6 @@ class GridWorldEnv(gym.Env):
         }
         self.nA = 8 # nA: number of actions
         self.action_space = spaces.Discrete(self.nA)
-
-        self.initial_state = np.array([initX, initY])
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -108,7 +126,7 @@ class GridWorldEnv(gym.Env):
             reward = 1.0
             terminated = True
         else:
-            print('GridWorldEnv.step: something wicked, please review!')
+            print('GridWorldEnv.step: found wicked tag, please review!')
             terminated = True
             quit()
 
