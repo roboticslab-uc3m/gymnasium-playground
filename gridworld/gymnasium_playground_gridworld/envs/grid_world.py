@@ -8,13 +8,13 @@ from gymnasium import spaces
 
 X points down (rows); Y points right (columns); Z would point outwards.
 
-*--> Y (columns)
+*--> Y (columns: self.inFile.shape[1])
 |
 v
-X (rows)
+X (rows: self.inFile.shape[0])
 """
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
+MAX_WINDOW_WIDTH, MAX_WINDOW_HEIGHT = 640, 480
 COLOR_BACKGROUND = (0, 0, 0)
 COLOR_WALL = (255, 255, 255)
 COLOR_ROBOT = (255, 0, 0)
@@ -24,7 +24,7 @@ class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["text", "pygame"], "render_fps": 4}
 
     def _2d_to_1d(self, value): # Flatten/ravel
-        return value[0]*self.inFile.shape[1] + value[1]
+        return value[1]*self.inFile.shape[0] + value[0]
 
     def __init__(self, render_mode=None):
         # Remember: See "Coordinate Systems for `.csv` and `print(numpy)`", above.
@@ -127,21 +127,34 @@ class GridWorldEnv(gym.Env):
     def _render_pygame(self):
 
         if self.window is None:
+            numCellsHigh = self.inFile.shape[0]
+            numCellsWide = self.inFile.shape[1]
+            inFileAspectRatio = numCellsWide / numCellsHigh
+            maxWindowAspectRatio = MAX_WINDOW_WIDTH / MAX_WINDOW_HEIGHT
+            if inFileAspectRatio == maxWindowAspectRatio:
+                WINDOW_WIDTH = MAX_WINDOW_WIDTH
+                WINDOW_HEIGHT = MAX_WINDOW_HEIGHT
+            elif inFileAspectRatio > maxWindowAspectRatio:
+                WINDOW_WIDTH = MAX_WINDOW_WIDTH # same
+                WINDOW_HEIGHT = MAX_WINDOW_HEIGHT * maxWindowAspectRatio
+            elif inFileAspectRatio < maxWindowAspectRatio:
+                WINDOW_WIDTH = MAX_WINDOW_WIDTH / maxWindowAspectRatio
+                WINDOW_HEIGHT = MAX_WINDOW_HEIGHT # same
             pygame.init()
             pygame.display.init()
-            self.window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+            self.window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         if self.clock is None:
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        canvas = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
         canvas.fill(COLOR_BACKGROUND)
         for iX in range(self.inFile.shape[0]):
             #print "iX:",iX
             for iY in range(self.inFile.shape[1]):
                 #print "* iY:",iY
 
-                pixelX = SCREEN_WIDTH/self.inFile.shape[0]
-                pixelY = SCREEN_HEIGHT/self.inFile.shape[1]
+                pixelX = WINDOW_WIDTH/self.inFile.shape[0]
+                pixelY = WINDOW_HEIGHT/self.inFile.shape[1]
 
                 #-- Skip box if map indicates a 0
                 if self.inFile[iX][iY] == 0:
