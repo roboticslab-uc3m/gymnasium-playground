@@ -14,7 +14,7 @@ v
 X (rows: self.inFile.shape[0])
 """
 
-MAX_WINDOW_WIDTH, MAX_WINDOW_HEIGHT = 640, 480
+MAX_WINDOW_WIDTH, MAX_WINDOW_HEIGHT = 1920, 1080
 COLOR_BACKGROUND = (0, 0, 0)
 COLOR_WALL = (255, 255, 255)
 COLOR_ROBOT = (255, 0, 0)
@@ -127,34 +127,35 @@ class GridWorldEnv(gym.Env):
     def _render_pygame(self):
 
         if self.window is None:
-            numCellsHigh = self.inFile.shape[0]
-            numCellsWide = self.inFile.shape[1]
-            inFileAspectRatio = numCellsWide / numCellsHigh
+            inFileAspectRatio = self.inFile.shape[1] / self.inFile.shape[0]
+            print('inFileAspectRatio',inFileAspectRatio)
             maxWindowAspectRatio = MAX_WINDOW_WIDTH / MAX_WINDOW_HEIGHT
+            print('maxWindowAspectRatio',maxWindowAspectRatio)
             if inFileAspectRatio == maxWindowAspectRatio:
-                WINDOW_WIDTH = MAX_WINDOW_WIDTH
-                WINDOW_HEIGHT = MAX_WINDOW_HEIGHT
+                self.WINDOW_WIDTH = MAX_WINDOW_WIDTH
+                self.WINDOW_HEIGHT = MAX_WINDOW_HEIGHT
             elif inFileAspectRatio > maxWindowAspectRatio:
-                WINDOW_WIDTH = MAX_WINDOW_WIDTH # same
-                WINDOW_HEIGHT = MAX_WINDOW_HEIGHT * maxWindowAspectRatio
+                print("inFileAspectRatio > maxWindowAspectRatio (panoramic)")
+                self.WINDOW_WIDTH = MAX_WINDOW_WIDTH # same
+                self.WINDOW_HEIGHT = MAX_WINDOW_WIDTH / inFileAspectRatio
             elif inFileAspectRatio < maxWindowAspectRatio:
-                WINDOW_WIDTH = MAX_WINDOW_WIDTH / maxWindowAspectRatio
-                WINDOW_HEIGHT = MAX_WINDOW_HEIGHT # same
+                print("inFileAspectRatio > maxWindowAspectRatio (stand)")
+                self.WINDOW_HEIGHT = MAX_WINDOW_HEIGHT # same
+                self.WINDOW_WIDTH = MAX_WINDOW_HEIGHT * inFileAspectRatio
             pygame.init()
             pygame.display.init()
-            self.window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+            self.window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
+            self.cellWidth = self.WINDOW_WIDTH/self.inFile.shape[1]
+            self.cellHeight = self.WINDOW_HEIGHT/self.inFile.shape[0]
         if self.clock is None:
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+        canvas = pygame.Surface((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
         canvas.fill(COLOR_BACKGROUND)
         for iX in range(self.inFile.shape[0]):
             #print "iX:",iX
             for iY in range(self.inFile.shape[1]):
                 #print "* iY:",iY
-
-                pixelX = WINDOW_WIDTH/self.inFile.shape[0]
-                pixelY = WINDOW_HEIGHT/self.inFile.shape[1]
 
                 #-- Skip box if map indicates a 0
                 if self.inFile[iX][iY] == 0:
@@ -162,12 +163,12 @@ class GridWorldEnv(gym.Env):
                 if self.inFile[iX][iY] == 1:
                     pygame.draw.rect(canvas,
                                      COLOR_WALL,
-                                     pygame.Rect( pixelX*iX, pixelY*iY, pixelX, pixelY ))
+                                     pygame.Rect( self.cellWidth*iY, self.cellHeight*iX, self.cellWidth, self.cellHeight ))
                 if self.inFile[iX][iY] == 3:
                     pygame.draw.rect(canvas, (0,255,0),
-                                     pygame.Rect( pixelX*iX, pixelY*iY, pixelX, pixelY ))
+                                     pygame.Rect( self.cellWidth*iY, self.cellHeight*iX, self.cellWidth, self.cellHeight ))
                 robot = pygame.draw.rect(canvas, COLOR_ROBOT,
-                                         pygame.Rect( pixelX*self.state[0]+pixelX/4.0, pixelY*self.state[1]+pixelY/4.0, pixelX/2.0, pixelY/2.0 ))
+                                         pygame.Rect( self.cellWidth*self.state[1]+self.cellWidth/4.0, self.cellHeight*self.state[0]+self.cellHeight/4.0, self.cellWidth/2.0, self.cellHeight/2.0 ))
 
         # The following line copies our drawings from `canvas` to the
         # visible window.
