@@ -6,15 +6,24 @@ import gymnasium_playground_gridworld
 import numpy as np 
 import time
 
-# X points down (rows)(v), Y points right (columns)(>), Z would point outwards.
-LEFT = 0  # < Decrease Y (column)
-DOWN = 1  # v Increase X (row)
-RIGHT = 2 # > Increase Y (column)
-UP = 3    # ^ Decrease X (row)
-CORNER_UP_RIGHT=4
-CORNER_UP_LEFT=5
-CORNER_DOWN_RIGHT=6
-CORNER_DOWN_LEFT=7
+"""
+# Coordinate Systems for `.csv` and `print(numpy)`
+
+X points down (rows); Y points right (columns); Z would point outwards.
+
+*--> Y (columns)
+|
+v
+X (rows)
+"""
+UP = 0
+UP_RIGHT = 1
+RIGHT = 2
+DOWN_RIGHT = 3
+DOWN = 4
+DOWN_LEFT = 5
+LEFT = 6
+UP_LEFT = 7
 
 SIM_PERIOD_MS = 500.0
 
@@ -24,8 +33,8 @@ print("state: "+str(state))
 env.render()
 time.sleep(0.5)
 
-for i in range(4):
-    observation, reward, terminated, truncated, info = env.step(CORNER_DOWN_RIGHT)
+for i in range(5):
+    observation, reward, terminated, truncated, info = env.step(DOWN_RIGHT)
     env.render()
     print("observation: "+str(observation)+", reward: "+str(reward)+", terminated: "+str(terminated))
     time.sleep(SIM_PERIOD_MS/1000.0)
