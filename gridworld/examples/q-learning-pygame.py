@@ -26,7 +26,7 @@ rev_list = []  # rewards per episode calculate
 print("Computing Q-Table...")
 for i in range(epis):
     # Reset environment
-    s = env.reset()
+    s, info = env.reset()
     rAll = 0
     d = False
     j = 0
