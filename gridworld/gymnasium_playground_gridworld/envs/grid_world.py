@@ -24,15 +24,6 @@ class GridWorldEnv(gym.Env):
     # classic "render_modes" use: "human" (pygame window), "rgb_array" (pygame raw data)
     metadata = {"render_modes": ["text", "pygame"], "render_fps": 4}
 
-    def _2d_to_1d(self, value):  # Flatten/ravel
-        try:
-            self.inFile[value[0]][value[1]]
-        except IndexError as e:
-            print('GridWorldEnv._2d_to_1d: full exception message:', e)
-            print('GridWorldEnv._2d_to_1d: value out of bounds, please review code!')
-            quit()
-        return value[1]*self.inFile.shape[0] + value[0]
-
     def __init__(self, render_mode=None, inFileStr='map1.csv', initX=2, initY=2, goalX=7, goalY=2):
 
         # Remember "Coordinate Systems for `.csv` and `print(numpy)`", above.
@@ -58,7 +49,7 @@ class GridWorldEnv(gym.Env):
 
         self.nS = self.inFile.shape[0] * \
             self.inFile.shape[1]  # nS: number of states
-        self.observation_space = spaces.Discrete(self.nS)
+        self.observation_space = spaces.Box(0, self.nS - 1, shape=(2,), dtype=int)
 
         self._action_to_direction = {
             0: np.array([-1, 0]),  # UP
@@ -80,7 +71,7 @@ class GridWorldEnv(gym.Env):
         self.clock = None
 
     def _get_obs(self):
-        return self._2d_to_1d(self._agent_location)
+        return self._agent_location
 
     def _get_info(self):
         return {
