@@ -54,6 +54,7 @@ class GridWorldEnv(gym.Env):
             print('GridWorldEnv.__init__: full exception message:', e)
             print('GridWorldEnv.__init__: goal out of bounds, please review code!')
             quit()
+        self._goal_location = np.array([goalX, goalY])
 
         self.nS = self.inFile.shape[0] * \
             self.inFile.shape[1]  # nS: number of states
@@ -82,7 +83,11 @@ class GridWorldEnv(gym.Env):
         return self._2d_to_1d(self._agent_location)
 
     def _get_info(self):
-        return {}
+        return {
+            "distance": np.linalg.norm(
+                self._agent_location - self._goal_location, ord=1
+            )
+        }
 
     def reset(self, seed=None, options=None):
         # We need the following line to seed self.np_random.

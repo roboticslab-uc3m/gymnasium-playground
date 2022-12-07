@@ -29,14 +29,14 @@ SIM_PERIOD_MS = 500.0
 
 env = gym.make('gymnasium_playground/GridWorld-v0', render_mode='text',
                inFileStr='map1.csv', initX=2, initY=2, goalX=7, goalY=2)
-state = env.reset()
-print("state: "+str(state))
+observation, info = env.reset()
+print("observation: "+str(observation)+", info: "+str(info))
 env.render()
 time.sleep(0.5)
 
 for i in range(5):
     observation, reward, terminated, truncated, info = env.step(DOWN_RIGHT)
     env.render()
-    print("observation: "+str(observation)+", reward: " +
-          str(reward)+", terminated: "+str(terminated))
+    print("observation: " + str(observation)+", reward: " + str(reward) + ", terminated: " +
+          str(terminated) + ", truncated: " + str(truncated) + ", info: " + str(info))
     time.sleep(SIM_PERIOD_MS/1000.0)
