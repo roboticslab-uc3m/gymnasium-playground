@@ -9,7 +9,8 @@ import gymnasium_playground_gridworld
 
 import numpy as np
 
-env = gym.make('gymnasium_playground/GridWorld-v0')
+env = gym.make('gymnasium_playground/GridWorld-v0', render_mode='pygame',
+               inFileStr='map1.csv', initX=2, initY=2, goalX=7, goalY=2)
 env.reset()
 env.render()
 
@@ -19,7 +20,7 @@ Q = np.zeros([env.observation_space.n, env.action_space.n])
 # 2. Parameters of Q-leanring
 eta = .628
 gma = .9
-epis = 5000
+epis = 100 # IMPORTANT: increase this value if goal is not being reached
 rev_list = []  # rewards per episode calculate
 
 # 3. Q-learning Algorithm
@@ -32,7 +33,6 @@ for i in range(epis):
     j = 0
     # The Q-Table learning algorithm
     while j < 99:
-        # j#env.render()
         j += 1
         # Choose action from Q table
         a = np.argmax(Q[s, :] + np.random.randn(1,
@@ -44,10 +44,12 @@ for i in range(epis):
         Q[s, a] = Q[s, a] + eta*(r + gma*np.max(Q[s1, :]) - Q[s, a])
         rAll += r
         s = s1
+        #env.render() # comment toggle to see each training step (slower)
         if d == True:
             break
     rev_list.append(rAll)
-    # j#env.render()
+    env.render() # comment toggle to see end of each epi
+    print("epi", i, "of", epis, "got rAll", rAll)
 print("Reward Sum on all episodes " + str(sum(rev_list)/epis))
 print("Final Values Q-Table")
 print(Q)
@@ -67,11 +69,11 @@ s, _ = env.reset()
 d = False
 # The Q-Table learning algorithm
 while d != True:
-    env.render()
     # Choose action from Q table
     a = np.argmax(Q[s, :] + np.random.randn(1, env.action_space.n)*(1./(i+1)))
     # Get new state & reward from environment
     s1, r, d, _, _ = env.step(a)
+    env.render()
     # Update Q-Table with new knowledge
     Q[s, a] = Q[s, a] + eta*(r + gma*np.max(Q[s1, :]) - Q[s, a])
     s = s1
