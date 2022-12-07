@@ -49,7 +49,9 @@ class GridWorldEnv(gym.Env):
 
         self.nS = self.inFile.shape[0] * \
             self.inFile.shape[1]  # nS: number of states
-        self.observation_space = spaces.Box(0, self.nS - 1, shape=(2,), dtype=int)
+        self.observation_space = spaces.Box(
+            low=np.array([0, 0]),
+            high=np.array([self.inFile.shape[0], self.inFile.shape[1]]), dtype=int)
 
         self._action_to_direction = {
             0: np.array([-1, 0]),  # UP

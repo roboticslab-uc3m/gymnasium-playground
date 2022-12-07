@@ -6,11 +6,13 @@ import tty
 import sys
 import gymnasium as gym
 import gymnasium_playground_gridworld
+from gymnasium_playground_gridworld.wrappers import BoxToDiscreteObservation
 
 import numpy as np
 
-env = gym.make('gymnasium_playground/GridWorld-v0', render_mode='text',
-               inFileStr='map1.csv', initX=2, initY=2, goalX=7, goalY=2)
+env_raw = gym.make('gymnasium_playground/GridWorld-v0', render_mode='text',
+                   inFileStr='map1.csv', initX=2, initY=2, goalX=7, goalY=2)
+env = BoxToDiscreteObservation(env_raw)
 env.reset()
 env.render()
 
