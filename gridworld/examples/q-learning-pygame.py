@@ -26,7 +26,7 @@ rev_list = []  # rewards per episode calculate
 print("Computing Q-Table...")
 for i in range(epis):
     # Reset environment
-    s, info = env.reset()
+    s, _ = env.reset()
     rAll = 0
     d = False
     j = 0
@@ -39,7 +39,7 @@ for i in range(epis):
                       env.action_space.n)*(1./(i+1)))
         # Get new state & reward from environment
         # print("a",a)
-        s1, r, d, _ = env.step(a)
+        s1, r, d, _, _ = env.step(a)
         # Update Q-Table with new knowledge
         Q[s, a] = Q[s, a] + eta*(r + gma*np.max(Q[s1, :]) - Q[s, a])
         rAll += r
@@ -63,7 +63,7 @@ finally:
     termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 # Reset environment
-s = env.reset()
+s, _ = env.reset()
 d = False
 # The Q-Table learning algorithm
 while d != True:
@@ -71,7 +71,7 @@ while d != True:
     # Choose action from Q table
     a = np.argmax(Q[s, :] + np.random.randn(1, env.action_space.n)*(1./(i+1)))
     # Get new state & reward from environment
-    s1, r, d, _ = env.step(a)
+    s1, r, d, _, _ = env.step(a)
     # Update Q-Table with new knowledge
     Q[s, a] = Q[s, a] + eta*(r + gma*np.max(Q[s1, :]) - Q[s, a])
     s = s1
