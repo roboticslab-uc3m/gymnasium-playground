@@ -8,10 +8,10 @@ from gymnasium import spaces
 
 X points down (rows); Y points right (columns); Z would point outwards.
 
-*--> Y (columns: self.inFile.shape[1])
+*--> Y (columns: self.inFile.shape[1]; provides the width in pygame)
 |
 v
-X (rows: self.inFile.shape[0])
+X (rows: self.inFile.shape[0]; provides the height in pygame)
 """
 
 MAX_WINDOW_WIDTH, MAX_WINDOW_HEIGHT = 1920, 1080
