@@ -157,11 +157,11 @@ class GridWorldEnv(gym.Env):
                 self.WINDOW_WIDTH = MAX_WINDOW_WIDTH
                 self.WINDOW_HEIGHT = MAX_WINDOW_HEIGHT
             elif inFileAspectRatio > maxWindowAspectRatio:
-                print("inFileAspectRatio > maxWindowAspectRatio (panoramic)")
+                print("inFileAspectRatio > maxWindowAspectRatio (landscape)")
                 self.WINDOW_WIDTH = MAX_WINDOW_WIDTH  # same
                 self.WINDOW_HEIGHT = MAX_WINDOW_WIDTH / inFileAspectRatio
             elif inFileAspectRatio < maxWindowAspectRatio:
-                print("inFileAspectRatio > maxWindowAspectRatio (stand)")
+                print("inFileAspectRatio > maxWindowAspectRatio (portrait)")
                 self.WINDOW_HEIGHT = MAX_WINDOW_HEIGHT  # same
                 self.WINDOW_WIDTH = MAX_WINDOW_HEIGHT * inFileAspectRatio
             pygame.init()
