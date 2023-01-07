@@ -10,5 +10,5 @@ pip install -e .
 
 ```bash
 cd examples
-python loop.py
+python loop.py  # loop example
 ```
