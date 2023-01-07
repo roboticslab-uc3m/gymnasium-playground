@@ -12,7 +12,7 @@ import numpy as np
 
 env_raw = gym.make('gymnasium_playground/GridWorld-v0',
                    render_mode='human',  # "human", "text", None
-                   inFileStr='map1.csv',
+                   inFileStr='../assets/map1.csv',
                    initX=2,
                    initY=2,
                    goalX=7,
