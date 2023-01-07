@@ -21,8 +21,7 @@ COLOR_ROBOT = (255, 0, 0)
 
 
 class GridWorldEnv(gym.Env):
-    # classic "render_modes" use: "human" (pygame window), "rgb_array" (pygame raw data)
-    metadata = {"render_modes": ["text", "pygame"], "render_fps": 4}
+    metadata = {"render_modes": ["human", "text"], "render_fps": 4}
 
     def __init__(self, render_mode=None, inFileStr='map1.csv', initX=2, initY=2, goalX=7, goalY=2):
 
@@ -135,10 +134,10 @@ class GridWorldEnv(gym.Env):
 
     def render(self):
         #print('GridWorldEnv.render', self.render_mode)
+        if self.render_mode == "human":
+            return self._render_pygame()
         if self.render_mode == "text":
             return self._render_text()
-        if self.render_mode == "pygame":  # "human" in tutorial
-            return self._render_pygame()
         else:  # None
             pass
 
