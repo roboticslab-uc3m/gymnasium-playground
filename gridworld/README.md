@@ -1,5 +1,7 @@
 # gymnasium-playground/gridworld
 
+![assets/gymnasium_playground_GridWorld-v0.png](assets/gymnasium_playground_GridWorld-v0.png)
+
 ## Installation
 
 ```bash
