@@ -5,7 +5,7 @@ from gymnasium import spaces
 
 class GrippersEnv(gym.Env):
     
-    def __init__(self, render_mode=None, init_angle=0., goal_angle=0.5):
+    def __init__(self, render_mode=None, random_init=False, init_angle=0., goal_angle=0.5):
         #super(GrippersEnv, self).__init__()
         """
         The environment emulates two grippers,
@@ -19,6 +19,7 @@ class GrippersEnv(gym.Env):
         """
 
         # Initial position
+        self.random_init = random_init
         self.initial_angle = np.array([init_angle])
 
         # goal
@@ -46,7 +47,10 @@ class GrippersEnv(gym.Env):
     def reset(self, seed=None):
         super().reset(seed=seed)
 
-        self.max_dif = self.goal_angle - self.initial_angle
+        if self.random_init:
+            self.initial_angle = np.random.uniform(-1, 1, 1)
+
+        self.max_dif = np.abs(self.goal_angle - self.initial_angle)
         self.angle = np.copy(self.initial_angle)
 
         observation = np.copy(self.angle)
