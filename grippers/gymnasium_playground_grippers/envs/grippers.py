@@ -19,17 +19,17 @@ class GrippersEnv(gym.Env):
         """
 
         # Initial position
-        self.initial_angle = init_angle
+        self.initial_angle = np.array([init_angle])
 
         # goal
-        self.goal_angle = goal_angle
+        self.goal_angle = np.array([goal_angle])
 
         # set max vel 
         self.max_w = 0.1 # 0.3rad/step or 18grad/step 
         self.max_dif = self.goal_angle - self.initial_angle
 
         # Status: angle of the second gripper
-        self.angle = 0.
+        self.angle = np.zeros(1)
 
         # Define action space: angle increment (normalized)
         self.action_space = spaces.Box(low = -1,
@@ -52,18 +52,14 @@ class GrippersEnv(gym.Env):
         observation = np.copy(self.angle)
         info = {}
 
-        self.render()
-
         return observation, info
 
     
     def step(self, action):
         action = np.clip(action, -1,1)
-        #candidate_angle = self.angle + action*self.max_w
-        #self.angle = np.sign(candidate_angle)*(candidate_angle - np.floor(np.abs(candidate_angle)))
         self.angle = self.angle + action*self.max_w
-        dif = np.abs(self.goal_angle - self.angle)
-        reward = -1 * dif / self.max_dif
+        dif = np.abs(self.goal_angle[0] - self.angle[0])
+        reward = -1 * dif / self.max_dif[0]
 
         terminated = False
         if dif < self.max_w:
