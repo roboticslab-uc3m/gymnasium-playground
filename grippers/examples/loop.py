@@ -4,6 +4,7 @@ import gymnasium as gym
 import gymnasium_playground_grippers
 
 import numpy as np
+import random as rng
 import time
 
 env = gym.make('gymnasium_playground/Grippers-v0')
@@ -12,7 +13,8 @@ print("observation: "+str(observation)+", info: "+str(info))
 env.render()
 
 for i in range(10):
-    observation, reward, terminated, truncated, info = env.step(i)
+    ac = rng.uniform(-1,1)
+    observation, reward, terminated, truncated, info = env.step(ac)
     env.render()
     print("observation: " + str(observation)+", reward: " + str(reward) + ", terminated: " +
           str(terminated) + ", truncated: " + str(truncated) + ", info: " + str(info))
