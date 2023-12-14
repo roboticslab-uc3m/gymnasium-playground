@@ -5,8 +5,8 @@ from gymnasium import spaces
 
 class GrippersEnv(gym.Env):
     
-    def __init__(self, render_mode=None):
-        super(GrippersEnv, self).__init__()
+    def __init__(self, render_mode=None, init_angle=0., goal_angle=0.5):
+        #super(GrippersEnv, self).__init__()
         """
         The environment emulates two grippers,
         wher the second one have the capability to 
@@ -19,17 +19,17 @@ class GrippersEnv(gym.Env):
         """
 
         # Initial position
-        self.initial_angle = np.zeros(1)
+        self.initial_angle = init_angle
 
         # goal
-        self.goal_angle = 0.5
+        self.goal_angle = goal_angle
 
         # set max vel 
         self.max_w = 0.1 # 0.3rad/step or 18grad/step 
-        self.max_dif = self.goal_angle - self.initial_angle[0]
+        self.max_dif = self.goal_angle - self.initial_angle
 
         # Status: angle of the second gripper
-        self.angle = np.zeros(1)
+        self.angle = 0.
 
         # Define action space: angle increment (normalized)
         self.action_space = spaces.Box(low = -1,
@@ -46,6 +46,7 @@ class GrippersEnv(gym.Env):
     def reset(self, seed=None):
         super().reset(seed=seed)
 
+        self.max_dif = self.goal_angle - self.initial_angle
         self.angle = np.copy(self.initial_angle)
 
         observation = np.copy(self.angle)
