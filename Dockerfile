@@ -16,10 +16,14 @@ RUN apt-get update && \
     wget -q http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/$SSL_DEBFILE && \
     dpkg -i $SSL_DEBFILE && \
     rm $SSL_DEBFILE && \
+    pip install stable-baselines3[extra] && \
+    
     pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir cffi && \
     pip install --no-cache-dir -e /gymnasium-playground/bandit && \
     pip install --no-cache-dir -e /gymnasium-playground/gridworld && \
+    pip install --no-cache-dir -e /gymnasium-playground/grippers && \
+
     mkdir /playground
 
 WORKDIR /playground
