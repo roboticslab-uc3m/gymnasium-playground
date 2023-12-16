@@ -22,7 +22,7 @@ RUN apt-get update && \
     pip install --no-cache-dir cffi && \
     pip install --no-cache-dir -e /gymnasium-playground/bandit && \
     pip install --no-cache-dir -e /gymnasium-playground/gridworld && \
-    pip install --no-cache-dir -e /gymnasium-playground/grippers && \
+    pip install --no-cache-dir -e /gymnasium-playground/line && \
 
     mkdir /playground
 

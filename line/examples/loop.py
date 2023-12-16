@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 import gymnasium as gym
-import gymnasium_playground_grippers
+import gymnasium_playground_line
 
 import numpy as np
 import random as rng
 import time
 
-env = gym.make('gymnasium_playground/Grippers-v0')
+env = gym.make('gymnasium_playground/Line-v0')
 observation, info = env.reset()
 print("observation: "+str(observation)+", info: "+str(info))
 env.render()
