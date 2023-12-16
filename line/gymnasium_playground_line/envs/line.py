@@ -18,6 +18,9 @@ class LineEnv(gym.Env):
         # goal
         self.goal_position = np.array([goal_position])
 
+        # current step
+        self.current_step =0
+
         # set max vel 
         self.max_w = 0.1 # 0.3rad/step or 18grad/step 
         self.max_dif = self.goal_position - self.initial_position
@@ -45,6 +48,7 @@ class LineEnv(gym.Env):
 
         self.max_dif = np.abs(self.goal_position - self.initial_position)
         self.current_position = np.copy(self.initial_position)
+        self.current_step = 0
 
         observation = np.copy(self.current_position)
         info = {}
@@ -53,10 +57,13 @@ class LineEnv(gym.Env):
 
     
     def step(self, action):
+        self.current_step +=1
         action = np.clip(action, -1,1)
-        self.current_position = self.current_position + action*self.max_w
+        self.current_position = np.clip(self.current_position + action*self.max_w, -1, 1) #limits of the line
         dif = np.abs(self.goal_position[0] - self.current_position[0])
         reward = -1 * dif / self.max_dif[0]
+        penalization = 0.99**(self.current_step-1)
+        reward *= penalization
 
         terminated = False
         if dif < self.max_w:

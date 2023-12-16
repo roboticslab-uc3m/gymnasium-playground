@@ -6,7 +6,7 @@ from stable_baselines3 import PPO # DQN coming soon
 # check environnment
 env = gym.make('gymnasium_playground/Line-v0', random_init=True)
 
-model = PPO('MlpPolicy', env, verbose=1, tensorboard_log="./tensorboard/",learning_rate=0.01).learn(10000)
+model = PPO('MlpPolicy', env, verbose=1, tensorboard_log="./tensorboard/",learning_rate=0.01).learn(100000)
 
 n_steps = 20
 n_epis = 5
