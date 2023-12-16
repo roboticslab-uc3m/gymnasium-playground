@@ -1,6 +1,8 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
+from torch.utils.tensorboard import SummaryWriter
+
 
 
 class LineEnv(gym.Env):
@@ -39,6 +41,10 @@ class LineEnv(gym.Env):
                                             high = 1,
                                             shape=(1,),
                                             dtype=np.float64)
+        
+        # summary writer
+        self.writer = SummaryWriter()
+
 
     def reset(self, seed=None):
         super().reset(seed=seed)
@@ -64,6 +70,8 @@ class LineEnv(gym.Env):
         reward = -1 * dif / self.max_dif[0]
         penalization = 0.99**(self.current_step-1)
         reward *= penalization
+
+        self.writer.add_scalar('reward_each_step', reward)
 
         terminated = False
         if dif < self.max_w:
