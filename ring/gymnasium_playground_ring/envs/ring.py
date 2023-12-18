@@ -24,6 +24,9 @@ class RingEnv(gym.Env):
         # current step
         self.current_step =0
 
+        # current reward
+        self.current_reward = 0
+
         # set max vel 
         self.max_w = 0.1 
         self.max_dif = self.angular_distance(self.goal_angle, self.initial_angle)
@@ -72,7 +75,8 @@ class RingEnv(gym.Env):
         penalization = 0.99**(self.current_step-1)
         reward *= penalization
 
-        self.writer.add_scalar('reward_each_step', reward)
+        self.current_reward =reward
+        # self.writer.add_scalar('reward_each_step', reward)
 
         terminated = False
         if dif < self.max_w:
